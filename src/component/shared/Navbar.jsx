@@ -1,0 +1,114 @@
+import { useContext, useState } from "react";
+import { BiHome } from "react-icons/bi";
+import { CiGrid31 } from "react-icons/ci";
+import { FcGoogle } from "react-icons/fc";
+import { GiBrain } from "react-icons/gi";
+import { CgLogOut } from "react-icons/cg";
+import { Link, NavLink } from "react-router-dom"; // ✅ Correct Import
+import { AuthContext } from "../../provider/AuthProvider";
+
+const Navbar = () => {
+  const { user, logOut, login } = useContext(AuthContext);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // For mobile menu toggle
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen); // Toggle function for the hamburger
+
+  return (
+    <div className="navbar flex flex-col lg:flex-row items-center justify-between px-5 py-3 shadow-md bg-white">
+      {/* Logo Section */}
+      <div className="flex items-center gap-2 w-full justify-between lg:w-auto">
+        <Link to="/" className="flex items-center text-xl font-semibold">
+          <span className="bg-gradient-to-r from-stone-300 to-cyan-600 bg-clip-text text-transparent">
+            My App
+          </span>
+          <img
+            src="https://img.icons8.com/?size=96&id=8gR77jBNhfyz&format=png"
+            alt="Logo"
+            width={22}
+          />
+          <span className="text-cyan-600 font-bold">Allll</span>
+        </Link>
+
+        {/* Hamburger Icon for Mobile */}
+        <button onClick={toggleMenu} className="lg:hidden p-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+      </div>
+
+      {/* Menu Section */}
+      <div
+        className={`flex flex-col lg:flex-row lg:items-center lg:gap-5 lg:px-5 mt-3 lg:mt-0 space-y-4 lg:space-y-0 ${
+          isMenuOpen ? "block" : "hidden"
+        } md:block`}
+      >
+        <ul className="menu flex flex-col lg:flex-row gap-2 lg:gap-5 justify-center">
+          {/* Home */}
+          <li>
+            <NavLink
+              to="/"
+              className="border rounded-full border-gray-300 px-4 py-2 bg-base-100 flex items-center gap-1 hover:bg-gray-100"
+            >
+              <BiHome size={18} /> Home
+            </NavLink>
+          </li>
+
+          {/* Create */}
+          <li>
+            <NavLink
+              to="/create"
+              className="border rounded-full border-gray-300 px-4 py-2 bg-base-100 flex items-center gap-1 hover:bg-gray-100"
+            >
+              <GiBrain size={18} /> Create
+            </NavLink>
+          </li>
+
+          {/* Creations */}
+          <li>
+            <NavLink
+              to="/creations"
+              className="border rounded-full border-gray-300 px-4 py-2 bg-base-100 flex items-center gap-1 hover:bg-gray-100"
+            >
+              <CiGrid31 size={18} /> Creations
+            </NavLink>
+          </li>
+
+          {/* Authentication Buttons */}
+          {user && user?.email ? (
+            <li>
+              <button
+                onClick={logOut}
+                className="border rounded-full border-gray-300 px-4 py-2 bg-base-100 flex items-center gap-1 hover:bg-gray-100"
+              >
+                <CgLogOut size={18} /> Logout
+              </button>
+            </li>
+          ) : (
+            <li>
+              <button
+                onClick={login}
+                className="border rounded-full border-gray-300 px-4 py-2 bg-base-100 flex items-center gap-1 hover:bg-gray-100"
+              >
+                <FcGoogle size={18} /> Sign-In
+              </button>
+            </li>
+          )}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export default Navbar;
