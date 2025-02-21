@@ -9,24 +9,24 @@ import { AuthContext } from "../../provider/AuthProvider";
 
 const Navbar = () => {
   const { user, logOut, login } = useContext(AuthContext);
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // For mobile menu toggle
+  const [isMenuOpen, setIsMenuOpen] = useState(false); 
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen); // Toggle function for the hamburger
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen); 
 
   return (
-    <div className="navbar flex flex-col lg:flex-row items-center justify-between px-5 py-3 shadow-md bg-white">
+    <div className="static   flex flex-col lg:flex-row items-center justify-between px-5 py-3 shadow-md bg-gradient-to-b from-cyan-200 bg-white">
       {/* Logo Section */}
       <div className="flex items-center gap-2 w-full justify-between lg:w-auto">
         <Link to="/" className="flex items-center text-xl font-semibold">
-          <span className="bg-gradient-to-r from-stone-300 to-cyan-600 bg-clip-text text-transparent">
-            My App
+          <span className="bg-gradient-to-r from-stone-800 to-cyan-800 bg-clip-text text-transparent font-bold">
+           Task Scheduling 
           </span>
           <img
             src="https://img.icons8.com/?size=96&id=8gR77jBNhfyz&format=png"
             alt="Logo"
             width={22}
           />
-          <span className="text-cyan-600 font-bold">Allll</span>
+          <span className="text-cyan-600 font-bold">APP</span>
         </Link>
 
         {/* Hamburger Icon for Mobile */}
@@ -54,7 +54,7 @@ const Navbar = () => {
           isMenuOpen ? "block" : "hidden"
         } md:block`}
       >
-        <ul className="menu flex flex-col lg:flex-row gap-2 lg:gap-5 justify-center">
+        <ul className="menu flex flex-col lg:flex-row gap-2 lg:gap-5 justify-center font-semibold">
           {/* Home */}
           <li>
             <NavLink

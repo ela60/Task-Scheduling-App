@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white py-8">
+    <footer className="bg-gradient-to-b from-cyan-400 py-8">
       <div className="container mx-auto px-6 lg:px-12">
         <div className="flex flex-col lg:flex-row justify-between items-center">
           {/* Left Side */}

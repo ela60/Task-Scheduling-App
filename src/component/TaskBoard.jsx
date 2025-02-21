@@ -134,7 +134,7 @@ const TaskBoard = () => {
         </select>
         <button
           onClick={handleAddTask}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+          className="bg-cyan-400 text-black px-4 py-2 rounded hover:bg-blue-600 transition"
         >
           Add Task
         </button>
@@ -162,7 +162,7 @@ const TaskBoard = () => {
             <div className="flex gap-4">
               <button
                 onClick={handleSaveEdit}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                className="bg-cyan-400 text-white px-4 py-2 rounded hover:bg-blue-600"
               >
                 Save
               </button>
@@ -186,7 +186,7 @@ const TaskBoard = () => {
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className="bg-gray-100 p-4 rounded-lg shadow-md min-h-[300px]"
+                  className="bg-cyan-100 p-4 rounded-lg shadow-md min-h-[300px]"
                 >
                   <h2 className="text-lg font-semibold text-gray-700 mb-2">{category}</h2>
                   {tasks

@@ -6,6 +6,7 @@ import Marquee from "react-fast-marquee";
 import Navbar from "../component/shared/Navbar";
 import Footer from "../component/shared/Footer";
 import TaskBoard from "../component/TaskBoard";
+import Banner from "../component/Banner";
 
 const AppLayout = () => {
   const { user } = useContext(AuthContext);
@@ -17,22 +18,24 @@ const AppLayout = () => {
           gradient={true}
           className="bg-primary text-base-100"
         >
-          Welcome Mrs. {user?.displayName} 🐦‍🔥. Lets unleash the power of
-          PicSeek-AI
+          Welcome 🐦  {user?.displayName} . 📌 "Effortless Task Management for a Smarter Workflow!"
         </Marquee>
       )}
-      <header className="bg-gradient-to-t lg:bg-gradient-to-l from-cyan-100 ">
+      <header className="bg-gradient-to-t lg:bg-gradient-to-b from-cyan-200 ">
         <nav className="md:w-11/12 mx-auto">
           <Navbar></Navbar>
         </nav>
       </header>
 
-      <main className="min-h-[calc(100svh-125px)]">
+      <Banner/>
+
+      <main className="">
         <Outlet></Outlet>
       </main>
 
+      {user && user?.email && (
       <TaskBoard/>
-
+    )}
       <Footer/>
 
       {/* <footer className="footer footer-center bg-cyan-50 glass text-base-content p-4">
