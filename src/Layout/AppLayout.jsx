@@ -5,6 +5,7 @@ import { useContext } from "react";
 import Marquee from "react-fast-marquee";
 import Navbar from "../component/shared/Navbar";
 import Footer from "../component/shared/Footer";
+import TaskBoard from "../component/TaskBoard";
 
 const AppLayout = () => {
   const { user } = useContext(AuthContext);
@@ -29,6 +30,8 @@ const AppLayout = () => {
       <main className="min-h-[calc(100svh-125px)]">
         <Outlet></Outlet>
       </main>
+
+      <TaskBoard/>
 
       <Footer/>
 
