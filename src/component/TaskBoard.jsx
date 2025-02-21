@@ -9,11 +9,22 @@ const TaskBoard = () => {
     description: "",
     category: "To-Do",
   });
-  const [editingTask, setEditingTask] = useState(null); // State for editing task
+  const [editingTask, setEditingTask] = useState(null);
+  const [ws, setWs] = useState(null);
 
-  // Fetch tasks from backend
+  // Fetch tasks and set up WebSocket connection
   useEffect(() => {
     getTasks().then((res) => setTasks(res.data));
+
+    const websocket = new WebSocket("ws://localhost:5000"); // Connect to WebSocket server
+    setWs(websocket);
+
+    websocket.onmessage = (event) => {
+      const updatedTasks = JSON.parse(event.data);
+      setTasks(updatedTasks); // Update state with new tasks from server
+    };
+
+    return () => websocket.close(); // Cleanup WebSocket on component unmount
   }, []);
 
   // Handle adding a new task
@@ -34,9 +45,7 @@ const TaskBoard = () => {
     const taskWithTimestamp = { ...newTask, timestamp: new Date().toISOString() };
 
     try {
-      const response = await addTask(taskWithTimestamp);
-      setTasks([...tasks, response.data]); // Optimistic UI update
-      setNewTask({ title: "", description: "", category: "To-Do" }); // Reset form
+      await addTask(taskWithTimestamp);
     } catch (error) {
       console.error("Error adding task:", error);
     }
@@ -62,8 +71,7 @@ const TaskBoard = () => {
     }
 
     try {
-      const updatedTask = await updateTask(editingTask._id, editingTask);
-      setTasks(tasks.map(task => task._id === updatedTask.data._id ? updatedTask.data : task)); // Update task in state
+      await updateTask(editingTask._id, editingTask);
       setEditingTask(null); // Reset editing state
     } catch (error) {
       console.error("Error editing task:", error);
@@ -74,7 +82,6 @@ const TaskBoard = () => {
   const handleDeleteTask = async (taskId) => {
     try {
       await deleteTask(taskId);
-      setTasks(tasks.filter(task => task._id !== taskId)); // Remove task from state
     } catch (error) {
       console.error("Error deleting task:", error);
     }
@@ -82,25 +89,17 @@ const TaskBoard = () => {
 
   // Handle Drag & Drop
   const handleDragEnd = (result) => {
-    if (!result.destination) return; // If dropped outside of a valid target, do nothing
-  
-    // Create a copy of the tasks array
+    if (!result.destination) return;
+
     const updatedTasks = [...tasks];
-  
-    // Find the task that was moved and its new destination
     const [movedTask] = updatedTasks.splice(result.source.index, 1);
-    movedTask.category = result.destination.droppableId; // Update the category of the moved task
-  
-    // Insert the moved task at the new index
+    movedTask.category = result.destination.droppableId;
+
     updatedTasks.splice(result.destination.index, 0, movedTask);
-  
-    // Update state to reflect the new order
     setTasks(updatedTasks);
-  
-    // Send the updated task to the backend for persistence
     updateTask(movedTask._id, movedTask);
   };
-  
+
   return (
     <div className="container mx-auto px-4 py-6">
       <h1 className="text-2xl font-bold text-center mb-6">Task Management</h1>
@@ -147,6 +146,7 @@ const TaskBoard = () => {
             <h2 className="text-xl font-semibold mb-4">Edit Task</h2>
             <input
               type="text"
+              placeholder="Update Title"
               value={editingTask.title}
               onChange={(e) => setEditingTask({ ...editingTask, title: e.target.value })}
               maxLength="50"
@@ -154,6 +154,7 @@ const TaskBoard = () => {
             />
             <input
               type="text"
+              placeholder="Update Description"
               value={editingTask.description}
               onChange={(e) => setEditingTask({ ...editingTask, description: e.target.value })}
               maxLength="200"
@@ -176,6 +177,8 @@ const TaskBoard = () => {
           </div>
         </div>
       )}
+
+
 
       {/* Drag & Drop Task Board */}
       <DragDropContext onDragEnd={handleDragEnd}>
