@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { getTasks, addTask, updateTask, deleteTask } from "../../src/component/services/api";
+import {
+  getTasks,
+  addTask,
+  updateTask,
+  deleteTask,
+} from "../../src/component/services/api";
 
 const TaskBoard = () => {
   const [tasks, setTasks] = useState([]);
@@ -42,7 +47,10 @@ const TaskBoard = () => {
       return;
     }
 
-    const taskWithTimestamp = { ...newTask, timestamp: new Date().toISOString() };
+    const taskWithTimestamp = {
+      ...newTask,
+      timestamp: new Date().toISOString(),
+    };
 
     try {
       await addTask(taskWithTimestamp);
@@ -91,13 +99,35 @@ const TaskBoard = () => {
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 
-    const updatedTasks = [...tasks];
-    const [movedTask] = updatedTasks.splice(result.source.index, 1);
-    movedTask.category = result.destination.droppableId;
+    const { source, destination } = result;
 
-    updatedTasks.splice(result.destination.index, 0, movedTask);
+    // Clone the tasks array
+    const updatedTasks = [...tasks];
+
+    // Find the dragged task
+    const movedTask = updatedTasks.find(
+      (task) => task._id === result.draggableId
+    );
+
+    if (!movedTask) return; // Ensure the task exists
+
+    // Update task category
+    movedTask.category = destination.droppableId;
+
+    // Remove task from old position
+    updatedTasks.splice(source.index, 1);
+
+    // Insert task in new position
+    updatedTasks.splice(destination.index, 0, movedTask);
+
+    // Update state
     setTasks(updatedTasks);
-    updateTask(movedTask._id, movedTask);
+
+    // Update task in database
+    updateTask(movedTask._id, {
+      ...movedTask,
+      category: destination.droppableId,
+    });
   };
 
   return (
@@ -118,7 +148,9 @@ const TaskBoard = () => {
           type="text"
           placeholder="Description (max 200 chars, optional)"
           value={newTask.description}
-          onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+          onChange={(e) =>
+            setNewTask({ ...newTask, description: e.target.value })
+          }
           maxLength="200"
           className="border p-2 rounded flex-1"
         />
@@ -148,7 +180,9 @@ const TaskBoard = () => {
               type="text"
               placeholder="Update Title"
               value={editingTask.title}
-              onChange={(e) => setEditingTask({ ...editingTask, title: e.target.value })}
+              onChange={(e) =>
+                setEditingTask({ ...editingTask, title: e.target.value })
+              }
               maxLength="50"
               className="border p-2 rounded mb-2 w-full"
             />
@@ -156,7 +190,9 @@ const TaskBoard = () => {
               type="text"
               placeholder="Update Description"
               value={editingTask.description}
-              onChange={(e) => setEditingTask({ ...editingTask, description: e.target.value })}
+              onChange={(e) =>
+                setEditingTask({ ...editingTask, description: e.target.value })
+              }
               maxLength="200"
               className="border p-2 rounded mb-4 w-full"
             />
@@ -178,8 +214,6 @@ const TaskBoard = () => {
         </div>
       )}
 
-
-
       {/* Drag & Drop Task Board */}
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -191,11 +225,17 @@ const TaskBoard = () => {
                   {...provided.droppableProps}
                   className="bg-cyan-100 p-4 rounded-lg shadow-md min-h-[300px]"
                 >
-                  <h2 className="text-lg font-semibold text-gray-700 mb-2">{category}</h2>
+                  <h2 className="text-lg font-semibold text-gray-700 mb-2">
+                    {category}
+                  </h2>
                   {tasks
                     .filter((task) => task.category === category)
                     .map((task, index) => (
-                      <Draggable key={task._id} draggableId={task._id} index={index}>
+                      <Draggable
+                        key={task._id}
+                        draggableId={String(task._id)}
+                        index={index}
+                      >
                         {(provided) => (
                           <div
                             ref={provided.innerRef}
@@ -203,8 +243,12 @@ const TaskBoard = () => {
                             {...provided.dragHandleProps}
                             className="bg-white p-4 rounded-lg shadow mb-2 flex flex-col"
                           >
-                            <h3 className="text-md font-semibold">{task.title}</h3>
-                            <p className="text-sm text-gray-600">{task.description}</p>
+                            <h3 className="text-md font-semibold">
+                              {task.title}
+                            </h3>
+                            <p className="text-sm text-gray-600">
+                              {task.description}
+                            </p>
                             <p className="text-xs text-gray-400">
                               {new Date(task.timestamp).toLocaleString()}
                             </p>
