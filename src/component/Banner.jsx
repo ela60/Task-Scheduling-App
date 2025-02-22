@@ -39,7 +39,7 @@ const Banner = () => {
           <img
             src="https://i.ibb.co/zhYJwVzc/banner-main-object.png"
             alt="Task Management"
-            className="rounded-lg shadow-lg  max-w-md"
+            className="rounded-lg shadow-lg max-w-[20rem] md:max-w-md lg:max-w-lg   "
           />
 
           {/* Moving Circle */}

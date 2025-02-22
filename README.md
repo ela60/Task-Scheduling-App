@@ -1,47 +1,41 @@
-# Task Management Application
+# 📝 Task Management App
 
-A web-based Task Management System that allows users to manage tasks, add/edit/delete tasks, reorder them, and move tasks between categories (To-Do, In Progress, Done). The application uses drag-and-drop functionality, integrates with MongoDB for data persistence, and ensures real-time synchronization.
-
-## Live Links
-
-- **Frontend (Live Demo)**: [Live Demo URL]
-- **Backend (API)**: [Backend API URL]
-
-## Features
-
-- Add, edit, delete, and reorder tasks.
-- Drag-and-drop tasks between categories (To-Do, In Progress, Done).
-- Real-time synchronization of tasks.
-- Responsive and clean user interface.
+A simple and efficient **Task Management Application** built with **Vite.js + React**. It allows users to **add, edit, delete, and drag-and-drop tasks** between categories like **To-Do, In Progress, and Done**. The app ensures **real-time updates** using **MongoDB** and WebSockets.
 
 ---
 
-## Dependencies
-
-### Frontend
-
-- **React**: A JavaScript library for building user interfaces.
-- **Vite.js**: A build tool that provides a fast development environment for React apps.
-- **@hello-pangea/dnd**: A drag-and-drop library to handle task reordering.
-- **Tailwind CSS**: A utility-first CSS framework for creating custom designs quickly.
-- **Axios**: A promise-based HTTP client for making requests to the backend.
-
-### Backend
-
-- **Express.js**: A minimal and flexible Node.js web application framework.
-- **MongoDB**: A NoSQL database used to store tasks and user information.
-- **Mongoose**: An ODM (Object Data Modeling) library for MongoDB and Node.js.
-- **jsonwebtoken (JWT)**: For user authentication and generating secure tokens.
-- **bcryptjs**: For hashing passwords (if used for user authentication).
+## 🚀 Live Demo
+🔗 **Live App:** [Deployed Link Here](https://your-live-link.com)  
+🔗 **Backend Repo (if applicable):** [Backend Repository](https://github.com/ela60/Task-Scheduling-App-Server.git)  
 
 ---
 
-## Installation Steps
+## 📦 Dependencies
 
-### 1. Clone the Repository
+Before running the project, ensure you have these installed:
 
-Clone the repository to your local machine:
+- **Frontend:**
+  - React (`^18.0.0`)
+  - Vite (`^5.0.0`)
+  - react-beautiful-dnd (`^13.1.1`) - For drag-and-drop
+  - Tailwind CSS (`^3.0.0`) - For styling
+  - Axios (`^1.0.0`) - For API requests (if applicable)
 
-```bash
-git clone https://github.com/your-username/task-management-app.git
+- **Backend (If Using One):**
+  - Node.js (`^18.x`)
+  - Express.js (`^4.x`)
+  - MongoDB (`^5.x`)
+  - WebSockets / Change Streams (for real-time updates)
+
+---
+
+## 🛠️ Installation Steps
+
+Follow these steps to **run the project locally**:
+
+### 1️⃣ Clone the Repository
+```sh
+git clone https://github.com/your-repo/task-management-app.git
 cd task-management-app
+npm install
+npm run dev
