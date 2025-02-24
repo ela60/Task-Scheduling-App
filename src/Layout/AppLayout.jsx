@@ -7,6 +7,7 @@ import Navbar from "../component/shared/Navbar";
 import Footer from "../component/shared/Footer";
 import TaskBoard from "../component/TaskBoard";
 import Banner from "../component/Banner";
+import AboutPage from "../component/AboutPage";
 
 const AppLayout = () => {
   const { user } = useContext(AuthContext);
@@ -32,6 +33,7 @@ const AppLayout = () => {
       <main className="">
         <Outlet></Outlet>
       </main>
+      <AboutPage/>
 
       {user && user?.email && (
       <TaskBoard/>

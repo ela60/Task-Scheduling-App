@@ -78,10 +78,10 @@ const Navbar = () => {
           {/* Creations */}
           <li>
             <NavLink
-              to="/creations"
+              to="/about"
               className="border rounded-full border-gray-300 px-4 py-2 bg-base-100 flex items-center gap-1 hover:bg-gray-100"
             >
-              <CiGrid31 size={18} /> Creations
+              <CiGrid31 size={18} />AboutUs
             </NavLink>
           </li>
 

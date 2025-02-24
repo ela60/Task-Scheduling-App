@@ -5,8 +5,8 @@ A simple and efficient **Task Management Application** built with **Vite.js + Re
 ---
 
 ## 🚀 Live Demo
-🔗 **Live App:** [Deployed Link Here](https://your-live-link.com)  
-🔗 **Backend Repo (if applicable):** [Backend Repository](https://github.com/ela60/Task-Scheduling-App-Server.git)  
+🔗 **Live App:** [Deployed Link Here](https://bistro-boss-2368b.web.app)  
+  
 
 ---
 
