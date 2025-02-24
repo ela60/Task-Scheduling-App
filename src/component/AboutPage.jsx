@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Briefcase, Globe, Users } from "lucide-react";
+import { Briefcase, Globe, Users, Code, Award, Laptop, HardDrive, GitBranch, PenTool } from "lucide-react";
 
 // Custom Card Component
 const Card = ({ children }) => (
@@ -17,6 +17,12 @@ export default function AboutPage() {
     { title: "Experience", icon: <Briefcase className="text-blue-500" size={28} />, desc: "Years of experience in frontend development." },
     { title: "Global Reach", icon: <Globe className="text-green-500" size={28} />, desc: "Worked with clients worldwide on web projects." },
     { title: "Community", icon: <Users className="text-purple-500" size={28} />, desc: "Active in developer communities and open-source projects." },
+    { title: "Coding Skills", icon: <Code className="text-red-500" size={28} />, desc: "Proficient in JavaScript, React, and other modern technologies." },
+    { title: "Awards", icon: <Award className="text-yellow-500" size={28} />, desc: "Recipient of several coding competitions and hackathon awards." },
+    { title: "Technology Enthusiast", icon: <Laptop className="text-teal-500" size={28} />, desc: "Passionate about staying up-to-date with the latest tech trends." },
+    { title: "Database Management", icon: <HardDrive className="text-orange-500" size={28} />, desc: "Experienced with MySQL, MongoDB, and other database systems." },
+    { title: "Version Control", icon: <GitBranch className="text-gray-500" size={28} />, desc: "Experienced with Git and GitHub for version control and collaboration." },
+    { title: "Design Skills", icon: <PenTool className="text-pink-500" size={28} />, desc: "Skilled in UI/UX design principles and tools like Figma and Adobe XD." },
   ];
 
   return (

@@ -71,7 +71,7 @@ const Navbar = () => {
               to="/create"
               className="border rounded-full border-gray-300 px-4 py-2 bg-base-100 flex items-center gap-1 hover:bg-gray-100"
             >
-              <GiBrain size={18} /> Create
+              <GiBrain size={18} /> Features
             </NavLink>
           </li>
 

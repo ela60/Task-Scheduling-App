@@ -33,7 +33,7 @@ const AppLayout = () => {
       <main className="">
         <Outlet></Outlet>
       </main>
-      <AboutPage/>
+      
 
       {user && user?.email && (
       <TaskBoard/>
