@@ -8,7 +8,7 @@ const handleLogin = async (user) => {
   };
 
   try {
-    await axios.post("https://task-scheduling-app-server-6.onrender.com/api/auth/login", userData);
+    await axios.post("http://localhost:5173/api/auth/login", userData);
     console.log("User stored successfully");
   } catch (error) {
     console.error("Error storing user:", error);

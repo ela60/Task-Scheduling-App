@@ -1,36 +1,24 @@
 import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import {
-  getTasks,
-  addTask,
-  updateTask,
-  deleteTask,
-} from "../../src/component/services/api";
+import { getTasks, addTask, updateTask, deleteTask } from "../../src/component/services/api";
 
 const TaskBoard = () => {
   const [tasks, setTasks] = useState([]);
-  const [newTask, setNewTask] = useState({
-    title: "",
-    description: "",
-    category: "To-Do",
-  });
+  const [newTask, setNewTask] = useState({ title: "", description: "", category: "To-Do" });
   const [editingTask, setEditingTask] = useState(null);
-  const [ws, setWs] = useState(null);
 
-  // Fetch tasks and set up WebSocket connection
   useEffect(() => {
-    getTasks().then((res) => setTasks(res.data));
-
-    const websocket = new WebSocket("ws://localhost:5000"); // Connect to WebSocket server
-    setWs(websocket);
-
-    websocket.onmessage = (event) => {
-      const updatedTasks = JSON.parse(event.data);
-      setTasks(updatedTasks); // Update state with new tasks from server
-    };
-
-    return () => websocket.close(); // Cleanup WebSocket on component unmount
+    fetchTasks();
   }, []);
+
+  const fetchTasks = async () => {
+    try {
+      const response = await getTasks();
+      setTasks(response.data);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  };
 
   // Handle adding a new task
   const handleAddTask = async () => {
@@ -47,13 +35,12 @@ const TaskBoard = () => {
       return;
     }
 
-    const taskWithTimestamp = {
-      ...newTask,
-      timestamp: new Date().toISOString(),
-    };
+    const taskWithTimestamp = { ...newTask, timestamp: new Date().toISOString() };
 
     try {
       await addTask(taskWithTimestamp);
+      fetchTasks();
+      setNewTask({ title: "", description: "", category: "To-Do" });
     } catch (error) {
       console.error("Error adding task:", error);
     }
@@ -80,7 +67,8 @@ const TaskBoard = () => {
 
     try {
       await updateTask(editingTask._id, editingTask);
-      setEditingTask(null); // Reset editing state
+      setEditingTask(null);
+      fetchTasks();
     } catch (error) {
       console.error("Error editing task:", error);
     }
@@ -90,44 +78,36 @@ const TaskBoard = () => {
   const handleDeleteTask = async (taskId) => {
     try {
       await deleteTask(taskId);
+      fetchTasks();
     } catch (error) {
       console.error("Error deleting task:", error);
     }
   };
 
   // Handle Drag & Drop
-  const handleDragEnd = (result) => {
+  const handleDragEnd = async (result) => {
     if (!result.destination) return;
 
     const { source, destination } = result;
-
-    // Clone the tasks array
     const updatedTasks = [...tasks];
+    const movedTaskIndex = updatedTasks.findIndex(task => String(task._id) === result.draggableId);
 
-    // Find the dragged task
-    const movedTask = updatedTasks.find(
-      (task) => task._id === result.draggableId
-    );
+    if (movedTaskIndex === -1) return;
 
-    if (!movedTask) return; // Ensure the task exists
-
-    // Update task category
+    const movedTask = updatedTasks[movedTaskIndex];
     movedTask.category = destination.droppableId;
 
-    // Remove task from old position
+    // Remove from old position and insert at new position
     updatedTasks.splice(source.index, 1);
-
-    // Insert task in new position
     updatedTasks.splice(destination.index, 0, movedTask);
 
-    // Update state
     setTasks(updatedTasks);
 
-    // Update task in database
-    updateTask(movedTask._id, {
-      ...movedTask,
-      category: destination.droppableId,
-    });
+    try {
+      await updateTask(movedTask._id, { ...movedTask, category: destination.droppableId });
+    } catch (error) {
+      console.error("Error updating task position:", error);
+    }
   };
 
   return (
@@ -148,9 +128,7 @@ const TaskBoard = () => {
           type="text"
           placeholder="Description (max 200 chars, optional)"
           value={newTask.description}
-          onChange={(e) =>
-            setNewTask({ ...newTask, description: e.target.value })
-          }
+          onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
           maxLength="200"
           className="border p-2 rounded flex-1"
         />
@@ -163,10 +141,7 @@ const TaskBoard = () => {
           <option value="In Progress">In Progress</option>
           <option value="Done">Done</option>
         </select>
-        <button
-          onClick={handleAddTask}
-          className="bg-cyan-400 text-black px-4 py-2 rounded hover:bg-blue-600 transition"
-        >
+        <button onClick={handleAddTask} className="bg-cyan-400 text-black px-4 py-2 rounded hover:bg-blue-600 transition">
           Add Task
         </button>
       </div>
@@ -180,9 +155,7 @@ const TaskBoard = () => {
               type="text"
               placeholder="Update Title"
               value={editingTask.title}
-              onChange={(e) =>
-                setEditingTask({ ...editingTask, title: e.target.value })
-              }
+              onChange={(e) => setEditingTask({ ...editingTask, title: e.target.value })}
               maxLength="50"
               className="border p-2 rounded mb-2 w-full"
             />
@@ -190,23 +163,15 @@ const TaskBoard = () => {
               type="text"
               placeholder="Update Description"
               value={editingTask.description}
-              onChange={(e) =>
-                setEditingTask({ ...editingTask, description: e.target.value })
-              }
+              onChange={(e) => setEditingTask({ ...editingTask, description: e.target.value })}
               maxLength="200"
               className="border p-2 rounded mb-4 w-full"
             />
             <div className="flex gap-4">
-              <button
-                onClick={handleSaveEdit}
-                className="bg-cyan-400 text-white px-4 py-2 rounded hover:bg-blue-600"
-              >
+              <button onClick={handleSaveEdit} className="bg-cyan-400 text-white px-4 py-2 rounded hover:bg-blue-600">
                 Save
               </button>
-              <button
-                onClick={() => setEditingTask(null)}
-                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-              >
+              <button onClick={() => setEditingTask(null)} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
                 Cancel
               </button>
             </div>
@@ -220,56 +185,42 @@ const TaskBoard = () => {
           {["To-Do", "In Progress", "Done"].map((category) => (
             <Droppable key={category} droppableId={category}>
               {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className="bg-cyan-100 p-4 rounded-lg shadow-md min-h-[300px]"
-                >
-                  <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                    {category}
-                  </h2>
+                <div ref={provided.innerRef} {...provided.droppableProps} className="bg-cyan-100 p-4 rounded-lg shadow-md min-h-[300px]">
+                  <h2 className="text-lg font-semibold text-gray-700 mb-2">{category}</h2>
                   {tasks
-                    .filter((task) => task.category === category)
-                    .map((task, index) => (
-                      <Draggable
-                        key={task._id}
-                        draggableId={String(task._id)}
-                        index={index}
-                      >
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className="bg-white p-4 rounded-lg shadow mb-2 flex flex-col"
-                          >
-                            <h3 className="text-md font-semibold">
-                              {task.title}
-                            </h3>
-                            <p className="text-sm text-gray-600">
-                              {task.description}
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              {new Date(task.timestamp).toLocaleString()}
-                            </p>
-                            <div className="mt-2 flex gap-2">
-                              <button
-                                onClick={() => handleEditTask(task)}
-                                className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
-                              >
-                                Edit
-                              </button>
-                              <button
-                                onClick={() => handleDeleteTask(task._id)}
-                                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
+  .filter(task => task.category === category)
+  .map((task, index) => (
+    <Draggable key={String(task._id)} draggableId={String(task._id)} index={index}>
+      {(provided) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          className="bg-white p-4 rounded-lg shadow mb-2"
+        >
+          <h3 className="text-md font-semibold">{task.title}</h3>
+          <p className="text-sm text-gray-500">{task.description}</p>
+
+          {/* Edit and Delete buttons */}
+          <div className="flex justify-end gap-2 mt-2">
+            <button
+              onClick={() => handleEditTask(task)}
+              className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => handleDeleteTask(task._id)}
+              className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      )}
+    </Draggable>
+  ))}
+
                   {provided.placeholder}
                 </div>
               )}

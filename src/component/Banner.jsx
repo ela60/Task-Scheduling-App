@@ -29,10 +29,7 @@ const Banner = () => {
           </button>
 
           {/* Moving Circle */}
-          <div
-            className="hidden md:block absolute w-40 h-40 bg-cyan-300 rounded-full cursor-grab active:cursor-grabbing transition-transform duration-200"
-            style={{ top: "120%", left: "10%" }}
-          ></div>
+         
         </div>
 
         <div className="md:w-1/2 relative flex justify-center">
